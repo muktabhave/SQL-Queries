@@ -10,3 +10,4 @@ select Department, Employees, Salary as "Salary" from
 from Department d join Employee e
 on (e.DepartmentId= d.Id))
 where rn <= 3
+ 
