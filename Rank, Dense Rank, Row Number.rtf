@@ -5,4 +5,4 @@ rank() over (partition by deptname order by sal) as sal_rank,
 dense_rank() over (partition by deptname order by sal) as sal_dense_rank,
 row_number() over (partition by deptname order by sal) as sal_rownum
 From employees;
-}
+
