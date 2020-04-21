@@ -14,4 +14,4 @@ select id, "Inner" as Type from tree
 where p_id is not null
 and id in (select p_id from tree)
 
-order by id}
+order by id
