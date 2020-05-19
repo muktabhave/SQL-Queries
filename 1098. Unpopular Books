@@ -1,1 +1,11 @@
+/*
+Write an SQL query that reports the books that have sold less than 10 copies in the last year, excluding books that have been available for less than 1 month from today. Assume today is 2019-06-23.
+*/
+
+select b.book_id, name 
+from books b left outer join orders o
+on (b.book_id= o.book_id)
+where b.available_from<= (add_months(to_date('2019-06-23'),-1))
+group by b.book_id, name
+having sum( case when o.dispatch_date <= to_date('2019-06-23', 'YYYY-MM-DD') and o.dispatch_date>= to_date('2018-06-24', 'YYYY-MM_DD') then quantity else 0 end) <10
 
