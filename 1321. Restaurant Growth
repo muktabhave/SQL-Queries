@@ -1,0 +1,15 @@
+select 
+to_char(a.visited_on, 'YYYY-MM-DD') as visited_on, sum(b.amt) as amount, round(avg(amt),2) as average_amount 
+from
+
+(select distinct visited_on from customer) a
+join
+(select visited_on, sum(amount) as amt from customer group by visited_on) b
+
+on(a.visited_on>= b.visited_on and a.visited_on<= (b.visited_on+6))
+
+group by to_char(a.visited_on, 'YYYY-MM-DD')
+
+having count(b.visited_on)=7
+
+order by 1 asc
