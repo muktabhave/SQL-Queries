@@ -1,0 +1,6 @@
+/* Write an SQL query to find the id and the name of all students who are enrolled in departments that no longer exists.
+ */
+
+select id, name from students
+where department_id not in
+(select id from departments)
