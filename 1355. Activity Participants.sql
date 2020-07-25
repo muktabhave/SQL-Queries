@@ -17,3 +17,17 @@ on (a.name=f.activity)
 group by a.name
 ) m2
 on (m2.countfname!= m1.maxcount and m2.countfname!= m1.mincount)
+
+ 
+ /* Alternative with almost same complexity
+ 
+ select activity from
+(select activity, 
+rank() over(order by ppl) as ar, 
+rank() over(order by ppl desc) as dr
+from
+(select activity, count(name) as ppl from friends group by 1 )t)z 
+where ar<> 1 
+and dr<> 1 
+ 
+ */
