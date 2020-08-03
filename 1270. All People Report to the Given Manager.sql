@@ -8,6 +8,7 @@ Write an SQL query to find employee_id of all employees that directly or indirec
 The indirect relation between managers will not exceed 3 managers as the company is small.
 
 Return result table in any order without duplicates.
+
 */
 
 select 
