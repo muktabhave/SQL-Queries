@@ -6,3 +6,4 @@ round(case when sum(accepted)>0 and sum(requested)>0 then sum(accepted)/ sum(req
 union
 select 0 as accepted, count(distinct concat(sender_id, send_to_id)) as requested 
 from friend_request )
+
