@@ -1,0 +1,29 @@
+create table ab
+(id number);
+
+create table bc
+(id number);
+
+insert into ab values (1);
+
+insert into ab values (1);
+
+
+insert into bc values (1);
+
+insert into bc values (1);
+
+insert into bc values (1);
+
+insert into bc values (1);
+
+insert into bc values (Null);
+
+commit;
+
+select ab.*, bc.* from 
+ab join bc
+on (ab.id= bc.id); -- 8 rows
+
+left join --8 rows
+right join and full join --9 rows
