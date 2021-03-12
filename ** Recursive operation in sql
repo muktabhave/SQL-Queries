@@ -1,0 +1,21 @@
+/* 1767. Find the Subtasks That Did Not Execute
+https://leetcode.com/problems/find-the-subtasks-that-did-not-execute/ */
+
+with recursive recur_tasks as
+(
+    select task_id,1 as cnt from tasks
+    union all
+    select t.task_id,cnt+1 
+    from tasks t join recur_tasks rt
+    ON (t.task_id = rt.task_id
+    AND cnt < subtasks_count )
+);
+
+select
+rt.task_id,
+rt.cnt as subtask_id
+from recur_tasks rt
+left outer join executed e
+ON (rt.task_id = e.task_id
+AND rt.cnt = e.subtask_id)
+where e.subtask_id is null;
