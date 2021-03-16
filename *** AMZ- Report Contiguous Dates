@@ -1,10 +1,9 @@
 /* 1225. Report Contiguous Dates
 https://leetcode.com/problems/report-contiguous-dates/submissions/ */
 
-with s1 as 
+with s as 
 
-(select 
- 'failed' as period_state,
+(select 'failed' as period_state,
  to_char(fail_date,'YYYY-MM-DD') as start_date,
 row_number () over (order by fail_Date) as rn
 from(
@@ -15,9 +14,21 @@ where to_char(fail_date, 'YYYY')= '2019'
 )
 where lagdate is null or (fail_Date-lagdate)>1
 
+ union
+select 
+ 'succeeded' as period_state,
+ to_char(success_date,'YYYY-MM-DD') as start_date,
+row_number () over (order by success_date) as rn
+from(
+select success_date,
+lag(success_date, 1) over (order by success_date) as lagdate
+from succeeded
+where to_char(success_date, 'YYYY')= '2019'
+)
+where lagdate is null or (success_date-lagdate)>1
 ),
 
-e1 as 
+e as 
 (select 
 'failed' as period_state,
 to_char(fail_date,'YYYY-MM-DD') as end_date,
@@ -29,26 +40,8 @@ from failed
 where to_char(fail_date, 'YYYY')= '2019'
 )
 where leaddate is null or (leaddate- fail_Date)>1
-),
-
-s2 as 
-
-( select 
- 'succeeded' as period_state,
- to_char(success_date,'YYYY-MM-DD') as start_date,
-row_number () over (order by success_date) as rn
-from(
-select success_date,
-lag(success_date, 1) over (order by success_date) as lagdate
-from succeeded
-where to_char(success_date, 'YYYY')= '2019'
-)
-where lagdate is null or (success_date-lagdate)>1)
-
-,
-
-e2 as 
-( 
+union
+ 
 select 
 'succeeded' as period_state,
 to_char(success_date,'YYYY-MM-DD') as end_date,
@@ -62,15 +55,8 @@ where to_char(success_date, 'YYYY')= '2019'
 where leaddate is null or (leaddate-success_date)>1
 )
 
-select 'failed' as period_state,
+select s.period_state,
 start_Date, end_date
-from s1 join e1
-on (s1.rn=e1.rn )
-
-union
-
-select 'succeeded' as period_state,
-start_Date, end_date
-from s2 join e2
-on (s2.rn=e2.rn )
+from s join e
+on (s.period_state= e.period_state and s.rn=e.rn )
 order by start_Date
