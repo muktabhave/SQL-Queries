@@ -1,0 +1,38 @@
+# Write your MySQL query statement below
+
+WITH RECURSIVE months(m) AS (
+SELECT 1
+UNION ALL
+SELECT m+1
+FROM months
+WHERE m < 12),
+
+driver_count as 
+(select m,
+sum(count_drivers) over (order by m) as active_drivers
+from
+(select 
+case when year(join_date)< 2020 then 1 else month(join_date) end as m,
+count(driver_id) as count_drivers
+from drivers
+where year(join_date)<=2020
+group by 1) driver_count),
+
+
+ride_count as 
+(select 
+month(requested_at) as m,
+count(a.ride_id) as ride_count
+from acceptedrides a left join rides r
+using (ride_id)
+where year(requested_at)= '2020'
+group by 1)
+
+select 
+mo.m as month,
+COALESCE(d.active_drivers,0) as active_drivers,
+COALESCE(r.ride_count,0) as accepted_rides
+from months mo left join ride_count r 
+on mo.m= r.m
+left join driver_count d
+on mo.m= d.m
