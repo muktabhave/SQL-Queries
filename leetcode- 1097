@@ -1,0 +1,27 @@
+/* Hard Leetcode question no 1097. Game Play Analysis V
+https://leetcode.com/problems/game-play-analysis-v/
+*/
+
+with install as 
+(select player_id,
+min(event_date) as install_date
+from Activity
+group by player_id)
+
+select to_char(event_date, 'YYYY-MM-DD') as install_date,
+sum(no_of_install) as installs,
+round((sum(day_1_ret)/ sum(no_of_install)),2) as Day1_retention
+from
+(select a.player_id,
+event_date, 
+case when event_date= install_date then 1 else 0 end as no_of_install,
+case when lead_date= (install_date+1) then 1 else 0 end as day_1_ret
+from 
+ (select player_id, device_id , event_date , 
+  lead(event_date, 1) over (partition by player_id order by event_date) as lead_date 
+  from Activity) 
+ a join Install i
+on (a.player_id= i.player_id))
+group by to_char(event_date, 'YYYY-MM-DD')
+having sum(no_of_install)>0
+order by event_date
