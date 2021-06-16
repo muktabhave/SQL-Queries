@@ -60,3 +60,59 @@ start_Date, end_date
 from s join e
 on (s.period_state= e.period_state and s.rn=e.rn )
 order by start_Date
+
+****************************** Alternative using joins *******************************************************
+
+
+with 
+s as
+(select success_date from succeeded where success_date between '2019-01-01' and '2019-12-31'),
+
+f as
+(select fail_date from failed where fail_date between '2019-01-01' and '2019-12-31'),
+
+fe as
+(select to_char(f1.fail_date, 'YYYY-MM-DD') as end_date,
+row_number() over (order by f1.fail_date) as rn
+from f f1 left outer join f f2
+on (f1.fail_date= f2.fail_date-1)
+where f2.fail_date is null),
+
+fs as
+(select to_char(f1.fail_date, 'YYYY-MM-DD') as start_date,
+row_number() over (order by f1.fail_date) as rn
+from f f1 left outer join f f2
+on (f1.fail_date= f2.fail_date+1)
+where f2.fail_date is null),
+
+se as
+(select to_char(s1.success_date, 'YYYY-MM-DD') as end_date,
+row_number() over (order by s1.success_date) as rn
+from s s1 left outer join s s2
+on (s1.success_date= s2.success_date-1)
+where s2.success_date is null),
+
+ss as
+(select 
+ --s1.success_date, s2.success_date as ss2
+to_char(s1.success_date, 'YYYY-MM-DD') as start_date,
+row_number() over (order by s1.success_date) as rn
+from s s1 left outer join s s2
+on (s1.success_date= s2.success_date+1   )
+where s2.success_date is null
+)
+
+select period_state, start_date, end_date from
+(
+select 'succeeded' as period_state, start_date, end_date
+from se join ss
+on (se.rn= ss.rn)
+
+union 
+
+select 'failed' as period_state, start_date, end_date
+from fe join fs
+on (fe.rn= fs.rn) 
+)
+order by start_date
+
