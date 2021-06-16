@@ -6,7 +6,7 @@ from
 join
 (select visited_on, sum(amount) as amt from customer group by visited_on) b
 
-on(a.visited_on>= b.visited_on and a.visited_on<= (b.visited_on+6))
+on( b.visited_on<= a.visited_on and b.visited_on<= a.visited_on-6
 
 group by to_char(a.visited_on, 'YYYY-MM-DD')
 
