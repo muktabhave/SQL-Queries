@@ -1,7 +1,7 @@
 /* 614. Second Degree Follower */
 
-Select f1.follower, count(distinct f2.follower) as num
-From follow f1 join follow f2
-On (f1.follower = f2.followee)
-Group by f1.follower
-order by f1.follower
+SELECT f1.follower, COUNT(DISTINCT f2.follower) as num
+FROM follow f1 join follow f2
+ON (f1.follower= f2.followee)
+GROUP BY f1.follower
+ORDER BY f1.follower
