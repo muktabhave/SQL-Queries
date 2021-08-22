@@ -1,0 +1,19 @@
+1) Using aggregare function inside window function for ordering-
+can only use it if the aggregate function is actually used in the query
+
+eg. SELECT customer_id, product_id, product_name 
+FROM
+(SELECT customer_id, p.product_id, p.product_name, count(order_id),
+DENSE_RANK() over (partition by customer_id order by count(order_id) desc) as dr
+FROM orders o join products p
+ON (o.product_id= p.product_id)
+GROUP BY customer_id, p.product_id, p.product_name)
+WHERE dr=1
+
+Now, you can skip aggregate function also but can't skip group by clause:
+
+(SELECT customer_id, p.product_id, p.product_name,
+DENSE_RANK() over (partition by customer_id order by count(order_id) desc) as dr
+FROM orders o join products p
+ON (o.product_id= p.product_id)
+GROUP BY customer_id, p.product_id, p.product_name)
