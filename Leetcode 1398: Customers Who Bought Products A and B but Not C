@@ -1,0 +1,18 @@
+-- 1) filter cust buying a & b 
+-- 2) find people who bought 2 distinct prod- these are people buying both a & b
+-- 3) filter people who bought c
+
+
+with cust_ab as
+(select customer_id
+from orders 
+where product_name in ('A', 'B')
+group by customer_id
+having count(distinct product_name)=2)
+
+select distinct c.customer_id, c.customer_name
+from cust_ab ab join customers c
+on (ab.customer_id= c.customer_id)
+where ab.customer_id not in
+(select customer_id from orders o where product_name= 'C')
+order by c.customer_id
