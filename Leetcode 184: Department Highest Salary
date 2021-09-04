@@ -1,0 +1,12 @@
+-- 1) join dept and salary to get dept name
+-- 2)dense_rank() on partition by dept order by sal desc
+
+SELECT department, employee, salary FROM
+(SELECT
+d.Name AS department,
+e.name AS employee,
+Salary,
+DENSE_RANK() OVER (PARTITION BY departmentid ORDER BY salary DESC) AS dr
+FROM Employee e join department d
+ON (e.departmentid= d.id))
+WHERE dr=1
