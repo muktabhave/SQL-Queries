@@ -1,0 +1,12 @@
+CREATE FUNCTION getNthHighestSalary(N IN NUMBER) RETURN NUMBER IS
+result NUMBER;
+BEGIN
+    
+    SELECT salary INTO result FROM
+    (SELECT salary,
+    dense_rank() over (order by Salary desc) as dr
+    FROM Employee)
+    WHERE dr=N and rownum<2;
+    
+    RETURN result;
+END;
