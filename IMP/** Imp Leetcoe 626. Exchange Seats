@@ -1,0 +1,16 @@
+with s2 as
+(select id, student, row_number() over(order by id)  as rn  from seat where mod(id,2)=0),
+
+s1 as
+(select id, student, row_number() over(order by id) as rn from seat where mod(id,2)!=0)
+
+select s1.id, nvl(s2.student, s1.student) as student
+from s1 left outer join s2
+on (s1.rn=s2.rn)
+
+union 
+
+select s2.id, s1.student as student
+from s1 join s2
+on (s1.rn=s2.rn)
+order by id
