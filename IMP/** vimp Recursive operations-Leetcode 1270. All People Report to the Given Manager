@@ -1,0 +1,14 @@
+
+with recursive recur_mgr as
+(select employee_id, manager_id from employees
+ 
+ union all
+ 
+ select r.employee_id, e.manager_id
+ from recur_mgr r join employees e
+ on (r.manager_id= e.employee_id)
+ where e.employee_id!= e.manager_id
+)
+
+select distinct employee_id from recur_mgr
+where manager_id=1 and employee_id!= 1
