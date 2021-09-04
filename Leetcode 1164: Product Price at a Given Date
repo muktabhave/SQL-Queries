@@ -1,0 +1,14 @@
+
+select product_id, new_price as price from
+(select product_id,
+new_price,
+dense_rank() over (partition by product_id order by change_date desc) as dr
+from products
+where change_date<= to_date('2019-08-16') )
+where dr=1
+
+union all
+
+select product_id, 10 as price from products
+group by product_id
+having min(change_date)> to_date('2019-08-16')
