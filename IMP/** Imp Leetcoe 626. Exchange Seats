@@ -14,3 +14,14 @@ select s2.id, s1.student as student
 from s1 join s2
 on (s1.rn=s2.rn)
 order by id
+
+
+/* Alternative solution
+
+SELECT (CASE WHEN MOD(id,2)=1 AND id!=(SELECT COUNT(*) FROM seat) THEN id+1
+WHEN MOD(id,2)=0 THEN id-1
+ELSE id END)id, student
+FROM seat
+ORDER BY 1
+
+*/
