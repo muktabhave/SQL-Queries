@@ -1,0 +1,7 @@
+select distinct num as ConsecutiveNums from
+(select 
+ num, 
+ id,
+ lag(id,2) over (partition by num order by id) as lag_2_id
+from logs)
+where (id-lag_2_id)=2
