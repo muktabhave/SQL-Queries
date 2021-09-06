@@ -1,0 +1,10 @@
+
+select player_id, player_name, 
+count(case when Wimbledon= player_id then year end) + 
+count(case when Fr_open= player_id then year end) +
+count(case when US_open= player_id then year end) + 
+count(case when Au_open= player_id then year end) as grand_slams_count 
+from players p join championships c
+on (p.player_id= c.wimbledon or  p.player_id=Fr_open or p.player_id=US_open or p.player_id=Au_open)
+group by player_id, player_name
+having count(player_id)>0
