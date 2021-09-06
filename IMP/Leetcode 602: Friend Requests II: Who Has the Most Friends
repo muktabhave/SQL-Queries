@@ -1,0 +1,16 @@
+
+with people as
+(select distinct requester_id as person_id from request_accepted
+
+union
+
+select distinct accepter_id as person_id from request_accepted)
+
+
+select person_id as id, friend_count as num from
+(select p.person_id, count(p.person_id) as friend_count
+from people p join request_accepted r
+on (p.person_id= requester_id or p.person_id= accepter_id)
+group by p.person_id
+order by count(p.person_id) desc)
+where rownum<2
