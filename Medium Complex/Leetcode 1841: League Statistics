@@ -1,0 +1,35 @@
+/* Write your PL/SQL query statement below */
+
+-- 1) add points and seperate home team and away team goal and point and union them
+-- 2) sum points, goals and count matches- aggreagte and order by
+
+
+with temp_match as 
+(select home_team_id as team_id, home_team_goals as for_goals,
+away_team_goals as against_goals,
+case when home_team_goals> away_team_goals then 3
+     when home_team_goals= away_team_goals then 1
+     else 0
+     end as match_points
+from matches
+
+ union all
+
+select away_team_id as team_id, away_team_goals as for_goals,
+ home_team_goals as against_goals,
+case when away_team_goals> home_team_goals then 3
+     when home_team_goals= away_team_goals then 1
+     else 0
+     end as match_points
+from matches) 
+
+select t.team_name,
+count(m.team_id) as matches_played,
+sum(m.match_points) as points,
+sum(for_goals) as goal_for,
+sum(against_goals) as goal_against,
+sum(for_goals)- sum(against_goals) as goal_diff
+from temp_match m join teams t
+on (m.team_id= t.team_id)
+group by t.team_name
+order by points desc, goal_diff desc, team_name asc
