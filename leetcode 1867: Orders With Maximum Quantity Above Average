@@ -1,0 +1,15 @@
+with avgqty as
+(select max(avg_qty) as m_avg_qty from
+(select order_id,
+avg(quantity) as avg_qty
+from ordersdetails
+group by order_id)),
+
+maxqty as
+(select order_id, max(quantity) as max_qty
+from ordersdetails
+group by order_id)
+
+select distinct m.order_id
+from maxqty m join avgqty a
+on (m.max_qty> a.m_avg_qty)
