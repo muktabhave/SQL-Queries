@@ -1,0 +1,16 @@
+with ordertemp as 
+(select product_id,
+order_id,
+order_date,
+dense_rank() over (partition by product_id order by order_date desc) as rn
+from orders)
+
+select 
+p.product_name,
+p.product_id,
+o.order_id,
+to_char(o.order_date, 'YYYY-MM-DD') as order_date
+from ordertemp o join products p
+on (o.product_id= p.product_id)
+where rn=1
+order by p.product_name, p.product_id, order_id
