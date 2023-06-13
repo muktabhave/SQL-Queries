@@ -1,5 +1,19 @@
 /* 1355. Activity Participants */
 
+/* Faster Solution */
+
+SELECT activity
+FROM
+(SELECT activity, count(*) as ac, 
+       max(count(*)) OVER () as max_num, 
+       min(count(*)) OVER () as min_num
+FROM Friends
+GROUP BY activity ) tablea
+WHERE ac not in (max_num, min_num);
+
+
+/* Alternate solution */
+
 WITH mx AS
 (SELECT MAX(cnt) as max_cnt, MIN(cnt) as min_cnt
 FROM
