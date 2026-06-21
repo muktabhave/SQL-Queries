@@ -76,12 +76,16 @@ User Jonathan with id = 7 logged in 7 times in 6 different days, five of them we
 
 ANS1:
 
-  
-select id, name from accounts where id in
-(select distinct id from
-(select id, login_date,
-lag(login_date, 4) over (partition by id order by login_date) as four_lagdate from
-(select distinct id, login_date from logins l
-))
-where login_date- four_lagdate= 4)
-order by id
+--Distinct used at 2 places because both tables have duplicates
+ 
+select distinct id, name from
+(select
+a.id,
+name,
+login_date,
+lag(login_date,4) over(partition by a.id order by login_date) as lag_four
+from accounts a join (select distinct id, login_date from logins) l
+on (a.id= l.id))
+where (login_date- lag_four)=4
+order by 1
+
