@@ -1,5 +1,50 @@
 /* Since some IDs have been removed from Logs. Write an SQL query to find the start and end number of continuous ranges in table Logs.
 Order the result table by start_id. */
+Table: Logs
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| log_id        | int     |
++---------------+---------+
+log_id is the column of unique values for this table.
+Each row of this table contains the ID in a log Table.
+ 
+
+Write a solution to find the start and end number of continuous ranges in the table Logs.
+
+Return the result table ordered by start_id.
+
+The result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Logs table:
++------------+
+| log_id     |
++------------+
+| 1          |
+| 2          |
+| 3          |
+| 7          |
+| 8          |
+| 10         |
++------------+
+Output: 
++------------+--------------+
+| start_id   | end_id       |
++------------+--------------+
+| 1          | 3            |
+| 7          | 8            |
+| 10         | 10           |
++------------+--------------+
+
+
+Ans:
+
 
 with e as
 (select l1.log_id as end_id, row_number() over(order by l1.log_id) as rn from logs l1 left join logs l2
