@@ -43,7 +43,42 @@ Output:
 +------------+--------------+
 
 
-Ans:
+ANS1:
+
+/* Write your PL/SQL query statement below */
+
+with 
+starttab as
+(select log_id as start_id,
+row_number() over(order by log_id) as rn
+from
+(select
+log_id,
+lag(log_id) over (order by log_id) as prev_logid
+from logs
+)
+where prev_logid is null or ((log_id- prev_logid)<>1)
+),
+
+endtab as
+(
+select log_id as end_id,
+row_number() over(order by log_id) as rn
+from
+(select
+log_id,
+lead(log_id) over (order by log_id) as next_logid
+from logs
+)
+where next_logid is null or ((next_logid-log_id)<>1)
+)
+
+select start_id, end_id 
+from starttab s join endtab e
+on (s.rn=e.rn)
+
+
+ ANS2:
 
 
 with e as
