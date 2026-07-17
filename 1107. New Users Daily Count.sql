@@ -55,10 +55,10 @@ The user with id 5 first logged in on 2019-03-01 so he's not counted on 2019-06-
  
 ANS:
 
-select to_char(first_login, 'YYYY-MM-DD') as "login_date", count(user_id) as "user_count" from\
-(select user_id, min(activity_date) as first_login\
-from traffic where activity= 'login' \
-group by user_id)\
-where first_login <=to_date('2019-06-30') and first_login >=(to_date('2019-06-30')-90)\
-group by to_char(first_login, 'YYYY-MM-DD')\
+select to_char(first_login, 'YYYY-MM-DD') as "login_date", count(user_id) as "user_count" from
+(select user_id, min(activity_date) as first_login
+from traffic where activity= 'login' 
+group by user_id)
+where first_login <=to_date('2019-06-30') and first_login >=(to_date('2019-06-30')-90)
+group by to_char(first_login, 'YYYY-MM-DD')
 order by to_char(first_login, 'YYYY-MM-DD')}
