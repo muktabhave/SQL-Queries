@@ -60,9 +60,27 @@ Explanation:
  
 
 
+ANS1:
 
-ANS:
+WITH date_tab AS (
+    SELECT DISTINCT visited_on 
+    FROM customer
+)
+SELECT 
+    TO_CHAR(d.visited_on, 'YYYY-MM-DD') AS visited_on,
+    SUM(c.amount) AS amount,
+    ROUND(SUM(c.amount) / 7, 2) AS average_amount
+FROM date_tab d
+JOIN customer c
+    ON c.visited_on BETWEEN d.visited_on - 6 AND d.visited_on
+GROUP BY d.visited_on
+HAVING COUNT(DISTINCT c.visited_on) = 7
+ORDER BY d.visited_on ASC;
 
+
+
+
+ANS2:
 select 
 to_char(a.visited_on, 'YYYY-MM-DD') as visited_on, sum(b.amt) as amount, round(avg(amt),2) as average_amount 
 from
